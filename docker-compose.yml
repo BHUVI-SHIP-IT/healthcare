@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: hcproj-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hcproj
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hcproj"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  backend:
+    build: ./backend
+    container_name: hcproj-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/hcproj
+      JWT_SECRET: super-secret-key
+      JWT_EXPIRES_IN: 1h
+      PORT: 4000
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:4000/api
+    container_name: hcproj-frontend
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:4000/api
+    ports:
+      - "8080:8080"
+
+volumes:
+  db-data:

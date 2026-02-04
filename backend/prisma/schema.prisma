@@ -1,0 +1,170 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  PROXY_STUDENT
+  CLASS_ADVISOR
+  HEALTH_RECEPTIONIST
+  DOCTOR
+  HOD
+  GATE_AUTHORITY
+  ADMIN
+}
+
+enum HealthRequestStatus {
+  PENDING_CA
+  CA_APPROVED
+  RECEPTION_ACK
+  DOCTOR_REVIEW
+  HOD_REVIEW
+  EXIT_AUTHORIZED
+  COMPLETED
+  REJECTED
+  CANCELLED
+}
+
+enum ApprovalDecision {
+  APPROVED
+  REJECTED
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id                     String                  @id @default(cuid())
+  email                  String                  @unique
+  fullName               String
+  role                   Role
+  passwordHash           String
+  classSection           String?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  healthRequests         HealthRequest[]         @relation("StudentRequests")
+  proxyRequests          HealthRequest[]         @relation("ProxyRequests")
+  caApprovals            CAApproval[]            @relation("AdvisorApprovals")
+  receptions             ArrivalAcknowledgement[] @relation("ReceptionistAcks")
+  doctorReports          DoctorReport[]          @relation("DoctorReports")
+  hodDecisions           HODDecision[]           @relation("HODDecisions")
+  issuedAuthorizations   ExitAuthorization[]     @relation("AuthorizationsIssued")
+  gateLogs               GateExitLog[]           @relation("GateAuthorityLogs")
+  auditLogs              AuditLog[]              @relation("AuditActors")
+}
+
+model HealthRequest {
+  id                    String                  @id @default(cuid())
+  studentId             String
+  proxyId               String?
+  symptoms              String
+  description           String?
+  status                HealthRequestStatus     @default(PENDING_CA)
+  classSection          String?
+  caApprovalStartedAt   DateTime?
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  student               User                    @relation("StudentRequests", fields: [studentId], references: [id])
+  proxy                 User?                   @relation("ProxyRequests", fields: [proxyId], references: [id])
+  caApprovals           CAApproval[]
+  arrivalAcknowledgement ArrivalAcknowledgement?
+  doctorReport          DoctorReport?
+  hodDecision           HODDecision?
+  exitAuthorization     ExitAuthorization?
+
+  @@index([status])
+  @@index([studentId])
+}
+
+model CAApproval {
+  id          String             @id @default(cuid())
+  requestId   String
+  advisorId   String
+  decision    ApprovalDecision
+  comment     String?
+  decidedAt   DateTime           @default(now())
+  request     HealthRequest      @relation(fields: [requestId], references: [id])
+  advisor     User               @relation("AdvisorApprovals", fields: [advisorId], references: [id])
+
+  @@unique([requestId, advisorId])
+}
+
+model ArrivalAcknowledgement {
+  id              String        @id @default(cuid())
+  requestId       String        @unique
+  receptionistId  String
+  acknowledgedAt  DateTime      @default(now())
+  request         HealthRequest @relation(fields: [requestId], references: [id])
+  receptionist    User          @relation("ReceptionistAcks", fields: [receptionistId], references: [id])
+}
+
+model DoctorReport {
+  id         String        @id @default(cuid())
+  requestId  String        @unique
+  doctorId   String
+  notes      String        @db.Text
+  riskLevel  RiskLevel
+  createdAt  DateTime      @default(now())
+  request    HealthRequest @relation(fields: [requestId], references: [id])
+  doctor     User          @relation("DoctorReports", fields: [doctorId], references: [id])
+}
+
+model HODDecision {
+  id         String             @id @default(cuid())
+  requestId  String             @unique
+  hodId      String
+  decision   ApprovalDecision
+  comment    String?
+  decidedAt  DateTime           @default(now())
+  request    HealthRequest      @relation(fields: [requestId], references: [id])
+  hod        User               @relation("HODDecisions", fields: [hodId], references: [id])
+}
+
+model ExitAuthorization {
+  id            String             @id @default(cuid())
+  requestId     String             @unique
+  issuedById    String?
+  tokenHash     String             @unique
+  expiresAt     DateTime
+  issuedAt      DateTime           @default(now())
+  usedAt        DateTime?
+  revokedAt     DateTime?
+  request       HealthRequest      @relation(fields: [requestId], references: [id])
+  issuedBy      User?              @relation("AuthorizationsIssued", fields: [issuedById], references: [id])
+  gateLogs      GateExitLog[]
+
+  @@index([expiresAt])
+}
+
+model GateExitLog {
+  id               String             @id @default(cuid())
+  authorizationId  String
+  gateAuthorityId  String
+  scannedAt        DateTime           @default(now())
+  success          Boolean            @default(true)
+  notes            String?
+  authorization    ExitAuthorization  @relation(fields: [authorizationId], references: [id])
+  gateAuthority    User               @relation("GateAuthorityLogs", fields: [gateAuthorityId], references: [id])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  entity     String
+  entityId   String
+  action     String
+  payload    Json?
+  createdAt  DateTime @default(now())
+  actor      User?    @relation("AuditActors", fields: [actorId], references: [id])
+
+  @@index([entity, entityId])
+}
