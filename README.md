@@ -13,12 +13,24 @@ npm install
 
 ### 2. Configure Environment Variables
 
-Create `frontend/.env`:
+Copy the example environment file and add your Supabase credentials:
+
+```bash
+cd frontend
+cp .env.example .env
+```
+
+Then edit `frontend/.env` and add your actual Supabase credentials:
 
 ```env
-VITE_SUPABASE_URL=https://mtzwvtfmvoajohrodegp.supabase.co
+VITE_SUPABASE_URL=your-supabase-project-url
 VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
+
+**⚠️ Security Note:**
+- Never commit `.env` files to version control
+- Your `.env` file is already ignored by `.gitignore`
+- Get your credentials from: [Supabase Dashboard](https://app.supabase.com) → Your Project → Settings → API
 
 ### 3. Run Development Server
 
