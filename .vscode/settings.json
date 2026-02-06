@@ -1,0 +1,19 @@
+{
+    "deno.enable": true,
+    "deno.enablePaths": [
+        "supabase/functions"
+    ],
+    "deno.lint": true,
+    "deno.unstable": false,
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.validate.enable": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/dist": true
+    },
+    "typescript.tsserver.experimental.enableProjectDiagnostics": false
+}

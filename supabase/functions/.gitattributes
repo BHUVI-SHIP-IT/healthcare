@@ -1,0 +1,2 @@
+# Ignore Deno type checking errors in IDE
+*.ts linguist-language=TypeScript
