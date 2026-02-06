@@ -38,6 +38,7 @@ export interface User {
   fullName: string;
   role: Role;
   classSection?: string;
+  department?: string;
   createdAt: string;
   updatedAt: string;
 }

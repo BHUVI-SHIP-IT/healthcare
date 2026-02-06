@@ -60,8 +60,8 @@ const StudentDashboard: React.FC = () => {
         <>
             <Navbar />
             <div className="container" style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-                <div className="flex justify-between items-center mb-4">
-                    <h1>My Health Requests</h1>
+                <div className="flex justify-between items-center" style={{ marginBottom: '1.5rem' }}>
+                    <h1 style={{ margin: 0 }}>My Health Requests</h1>
                     <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
                         {showForm ? 'Cancel' : '+ New Request'}
                     </button>

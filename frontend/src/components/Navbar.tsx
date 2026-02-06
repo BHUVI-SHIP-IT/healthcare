@@ -31,6 +31,24 @@ const Navbar: React.FC = () => {
         return role.replace('_', ' ');
     };
 
+    const parseClassSection = (classSection?: string) => {
+        if (!classSection) return null;
+        // Format: "2ND_YEAR_O_CSE" -> {year: "2ND YEAR", section: "O", department: "CSE"}
+        const parts = classSection.split('_');
+        if (parts.length >= 4) {
+            return {
+                year: `${parts[0]} ${parts[1]}`,
+                section: parts[2],
+                department: parts.slice(3).join(' ')
+            };
+        }
+        return null;
+    };
+
+    const studentInfo = (user?.role === Role.STUDENT || user?.role === Role.PROXY_STUDENT) 
+        ? parseClassSection(user?.classSection) 
+        : null;
+
     return (
         <nav className="navbar">
             <div className="navbar-content">
@@ -41,6 +59,11 @@ const Navbar: React.FC = () => {
                             <div style={{ textAlign: 'right' }}>
                                 <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>{user.fullName}</div>
                                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user.email}</div>
+                                {studentInfo && (
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
+                                        {studentInfo.year} • Section {studentInfo.section} • {studentInfo.department}
+                                    </div>
+                                )}
                             </div>
                             <span className={getRoleBadgeClass(user.role)}>
                                 {getRoleDisplayName(user.role)}
