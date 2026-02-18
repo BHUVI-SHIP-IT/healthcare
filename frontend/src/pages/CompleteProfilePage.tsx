@@ -113,15 +113,21 @@ const CompleteProfilePage: React.FC = () => {
                 updates.classSection = `${department} - ${year} - ${section}`; // Format: CSE - 2024 - A
                 updates.department = department; // Save parsed department
             } else {
+            } else {
                 // Staff
                 if (role === Role.CLASS_ADVISOR) {
                     if (!department || !year || !section) throw new Error("Please fill in all fields (Dept, Year, Section).");
                     updates.classSection = `${department} - ${year} - ${section}`;
-                } else {
-                    // For HOD, etc.
+                    updates.department = department;
+                } else if (role === Role.HOD) {
+                    if (!department) throw new Error("Please select a department.");
                     updates.classSection = department;
+                    updates.department = department;
+                } else {
+                    // Doctor, Receptionist, etc. - No department needed
+                    updates.department = 'General'; // Set a default or leave undefined
+                    updates.classSection = 'General';
                 }
-                updates.department = department;
             }
 
             await updateProfile(updates);
@@ -189,15 +195,7 @@ const CompleteProfilePage: React.FC = () => {
                             />
                         </div>
 
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Detected Role</label>
-                            <input
-                                type="text"
-                                value={role === Role.STUDENT ? 'Student' : 'Staff / Class Advisor'}
-                                disabled
-                                className="input-field opacity-75 cursor-not-allowed font-semibold text-primary-600"
-                            />
-                        </div>
+
 
                         {role === Role.STUDENT ? (
                             <>
@@ -242,21 +240,28 @@ const CompleteProfilePage: React.FC = () => {
                             </>
                         ) : (
                             <>
-                                <div className="input-group">
-                                    <label className="input-label">Department</label>
-                                    <select
-                                        value={department}
-                                        onChange={(e) => setDepartment(e.target.value)}
-                                        className="input-field"
-                                        required
-                                    >
-                                        <option value="">Select Department</option>
-                                        <option value="CSE">CSE</option>
-                                        <option value="IT">IT</option>
-                                        <option value="AIDS">AIDS</option>
-                                        {/* Add more as needed */}
-                                    </select>
-                                </div>
+
+                                {/* Only show Department for roles that need it (HOD, Class Advisor) */}
+                                {role !== Role.DOCTOR && role !== Role.HEALTH_RECEPTIONIST && role !== Role.GATE_AUTHORITY && (
+                                    <div className="input-group">
+                                        <label className="input-label">Department</label>
+                                        <select
+                                            value={department}
+                                            onChange={(e) => setDepartment(e.target.value)}
+                                            className="input-field"
+                                            required
+                                        >
+                                            <option value="">Select Department</option>
+                                            <option value="CSE">CSE</option>
+                                            <option value="IT">IT</option>
+                                            <option value="AIDS">AIDS</option>
+                                            <option value="ECE">ECE</option>
+                                            <option value="MECH">MECH</option>
+                                            <option value="MCT">MCT</option>
+                                            {/* Add more as needed */}
+                                        </select>
+                                    </div>
+                                )}
                                 <div className="input-group">
                                     <label className="input-label">Role</label>
                                     <select
