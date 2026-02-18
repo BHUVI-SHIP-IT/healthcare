@@ -4,6 +4,7 @@
     "build": "npm run build --prefix frontend",
     "preview": "npm run preview --prefix frontend",
     "install-frontend": "npm install --prefix frontend",
+    "postinstall": "npm run install-frontend",
     "lint": "npm run lint --prefix frontend"
   },
   "devDependencies": {
