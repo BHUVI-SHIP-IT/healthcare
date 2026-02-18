@@ -58,7 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 // Check if profile is complete
                 // A basic check: if role is missing or (for student) classSection is missing
                 const metadata = session.user.user_metadata;
-                if (!metadata.role || !metadata.classSection) {
+                if (!metadata.role || !metadata.classSection || !metadata.fullName || metadata.fullName === 'User') {
                     setRequiresOnboarding(true);
                 } else {
                     setRequiresOnboarding(false);
@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
                 // Check if profile is complete
                 const metadata = session.user.user_metadata;
-                if (!metadata.role || !metadata.classSection) {
+                if (!metadata.role || !metadata.classSection || !metadata.fullName || metadata.fullName === 'User') {
                     setRequiresOnboarding(true);
                 } else {
                     setRequiresOnboarding(false);

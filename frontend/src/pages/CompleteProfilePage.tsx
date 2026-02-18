@@ -44,8 +44,8 @@ const CompleteProfilePage: React.FC = () => {
                     // split by @ to get local part: mbhuvaneswar.cse2024
                     const localPart = user.email.split('@')[0];
 
-                    // Try to guess name if not set
-                    if (!user.fullName) {
+                    // Try to guess name if not set or is generic "User"
+                    if (!user.fullName || user.fullName === 'User') {
                         const namePart = localPart.split('.')[0];
                         // Capitalize first letter
                         setFullName(namePart.charAt(0).toUpperCase() + namePart.slice(1));
