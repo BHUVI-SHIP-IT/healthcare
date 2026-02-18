@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getPendingRequests, approveRequest } from '../services/requests';
+import { getPendingRequests, approveRequest, getAdvisorRequestHistory } from '../services/requests';
 import { HealthRequest, ApprovalDecision } from '../types';
 import RequestCard from '../components/RequestCard';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -14,14 +14,18 @@ const ClassAdvisorDashboard: React.FC = () => {
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [activeTab, setActiveTab] = useState<'pending' | 'history'>('pending');
 
     useEffect(() => {
         loadRequests();
-    }, []);
+    }, [activeTab]);
 
     const loadRequests = async () => {
+        setLoading(true);
         try {
-            const data = await getPendingRequests();
+            const data = activeTab === 'pending'
+                ? await getPendingRequests()
+                : await getAdvisorRequestHistory();
             setRequests(data);
         } catch (err) {
             console.error('Failed to load requests:', err);
@@ -64,10 +68,25 @@ const ClassAdvisorDashboard: React.FC = () => {
         <>
             <Navbar />
             <div className="container" style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-                <h1>Pending Approvals</h1>
+                <h1 style={{ marginBottom: '0.5rem' }}>Class Advisor Dashboard</h1>
                 <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-                    Review and approve health requests from students in your class.
+                    Manage health requests for your class.
                 </p>
+
+                <div className="flex" style={{ marginBottom: '1.5rem', gap: '1rem' }}>
+                    <button
+                        className={`btn ${activeTab === 'pending' ? 'btn-primary' : 'btn-secondary'}`}
+                        onClick={() => setActiveTab('pending')}
+                    >
+                        Pending Approvals
+                    </button>
+                    <button
+                        className={`btn ${activeTab === 'history' ? 'btn-primary' : 'btn-secondary'}`}
+                        onClick={() => setActiveTab('history')}
+                    >
+                        Request History
+                    </button>
+                </div>
 
                 {success && (
                     <div className="alert alert-success">
@@ -88,9 +107,21 @@ const ClassAdvisorDashboard: React.FC = () => {
                         <div className="modal" onClick={(e) => e.stopPropagation()}>
                             <div className="card">
                                 <h3>Approve Request</h3>
-                                <p><strong>Student:</strong> {selectedRequest.student?.fullName || 'Unknown Student'}</p>
-                                <p><strong>Symptoms:</strong> {selectedRequest.symptoms}</p>
-                                {selectedRequest.description && <p><strong>Description:</strong> {selectedRequest.description}</p>}
+
+                                <div style={{ backgroundColor: 'rgba(0,0,0,0.02)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid rgba(0,0,0,0.05)' }}>
+                                    <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Student Details</h4>
+                                    <div className="grid grid-2" style={{ gap: '0.5rem' }}>
+                                        <p style={{ margin: 0 }}><strong>Name:</strong> {selectedRequest.student?.fullName}</p>
+                                        <p style={{ margin: 0 }}><strong>Class:</strong> {selectedRequest.student?.classSection || selectedRequest.classSection}</p>
+                                        <p style={{ margin: 0 }}><strong>Email:</strong> {selectedRequest.student?.email}</p>
+                                    </div>
+                                </div>
+
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Health Problem</h4>
+                                    <p><strong>Symptoms:</strong> {selectedRequest.symptoms}</p>
+                                    {selectedRequest.description && <p><strong>Description:</strong> {selectedRequest.description}</p>}
+                                </div>
 
                                 <form onSubmit={handleApproval}>
                                     <div className="input-group">
@@ -132,17 +163,28 @@ const ClassAdvisorDashboard: React.FC = () => {
                 <div className="grid grid-2">
                     {requests.length === 0 ? (
                         <div className="text-center p-4" style={{ gridColumn: '1 / -1' }}>
-                            <p style={{ color: 'var(--text-muted)' }}>No pending approvals at this time.</p>
+                            <p style={{ color: 'var(--text-muted)' }}>
+                                {activeTab === 'pending'
+                                    ? "No pending approvals at this time."
+                                    : "No request history found."}
+                            </p>
                         </div>
                     ) : (
-                        requests.map((request) => (
+                        requests.map((request, index) => (
                             <RequestCard
                                 key={request.id}
                                 request={request}
+                                displayId={requests.length - index}
                                 actions={
-                                    <button onClick={() => setSelectedRequest(request)} className="btn btn-primary">
-                                        Review
-                                    </button>
+                                    activeTab === 'pending' ? (
+                                        <button onClick={() => setSelectedRequest(request)} className="btn btn-primary">
+                                            Review
+                                        </button>
+                                    ) : (
+                                        <span className="badge" style={{ opacity: 0.7 }}>
+                                            {request.status.replace(/_/g, ' ')}
+                                        </span>
+                                    )
                                 }
                             />
                         ))

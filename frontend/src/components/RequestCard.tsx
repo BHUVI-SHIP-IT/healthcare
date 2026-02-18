@@ -7,16 +7,17 @@ interface RequestCardProps {
     request: HealthRequest;
     onViewDetails?: (request: HealthRequest) => void;
     actions?: React.ReactNode;
+    displayId?: string | number;
 }
 
-const RequestCard: React.FC<RequestCardProps> = ({ request, onViewDetails, actions }) => {
+const RequestCard: React.FC<RequestCardProps> = ({ request, onViewDetails, actions, displayId }) => {
     return (
         <div className="glass-card card animate-fadeIn">
             <div className="card-header">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center" style={{ gap: '1rem' }}>
                     <div>
                         <h3 className="card-title" style={{ marginBottom: '0.25rem' }}>
-                            Request #{request.id.slice(-8)}
+                            {displayId ? `Request #${displayId}` : `Request #${request.id.slice(-8)}`}
                         </h3>
                         <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: 0 }}>
                             {formatDistanceToNow(new Date(request.createdAt), { addSuffix: true })}
@@ -27,6 +28,13 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onViewDetails, actio
             </div>
 
             <div className="card-body">
+                {request.student && (
+                    <div className="mb-2">
+                        <strong style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Student:</strong>
+                        <p style={{ marginTop: '0.25rem', marginBottom: '0.5rem', fontWeight: 600 }}>{request.student.fullName}</p>
+                    </div>
+                )}
+
                 <div className="mb-2">
                     <strong style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Symptoms:</strong>
                     <p style={{ marginTop: '0.25rem', marginBottom: '0.5rem' }}>{request.symptoms}</p>

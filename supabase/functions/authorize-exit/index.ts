@@ -61,8 +61,7 @@ serve(async (req: Request) => {
         const { data: request, error: updateError } = await supabase
             .from('HealthRequest')
             .update({
-                status: 'EXIT_AUTHORIZED',
-                exitToken
+                status: 'EXIT_AUTHORIZED'
             })
             .eq('id', requestId)
             .select()

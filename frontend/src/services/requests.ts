@@ -97,6 +97,30 @@ export async function getPendingRequests(): Promise<HealthRequest[]> {
     return data as unknown as HealthRequest[];
 }
 
+export async function getAdvisorRequestHistory(): Promise<HealthRequest[]> {
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) throw new Error('Not authenticated');
+
+    const userRole = user.user_metadata.role;
+    // Currently only for Class Advisors, but can be expanded
+    if (userRole !== 'CLASS_ADVISOR') {
+        return [];
+    }
+
+    const { data, error } = await supabase
+        .from('HealthRequest')
+        .select('*, student:User!studentId(id, fullName, email, classSection)')
+        .eq('classSection', user.user_metadata.classSection)
+        .neq('status', 'PENDING_CA') // Everything NOT pending
+        .order('createdAt', { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return data as unknown as HealthRequest[];
+}
+
 // Workflow functions now use Edge Functions
 export async function approveRequest(requestId: string, decision: string, comments?: string) {
     const { data: { session } } = await supabase.auth.getSession();

@@ -10,10 +10,11 @@ import ReceptionistDashboard from './pages/ReceptionistDashboard';
 import DoctorDashboard from './pages/DoctorDashboard';
 import HODDashboard from './pages/HODDashboard';
 import GateDashboard from './pages/GateDashboard';
+import CompleteProfilePage from './pages/CompleteProfilePage';
 import LoadingSpinner from './components/LoadingSpinner';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, requiresOnboarding } = useAuth();
 
   if (isLoading) {
     return <LoadingSpinner fullScreen />;
@@ -22,6 +23,16 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
+
+  // Allow access to complete-profile page if onboarding is required
+  if (requiresOnboarding && window.location.pathname !== '/complete-profile') {
+    return <Navigate to="/complete-profile" replace />;
+  }
+
+  // Allow users to revisit complete-profile to update details
+  // if (!requiresOnboarding && window.location.pathname === '/complete-profile') {
+  //   return <Navigate to="/dashboard" replace />;
+  // }
 
   return <>{children}</>;
 };
@@ -35,7 +46,6 @@ const DashboardRouter: React.FC = () => {
 
   switch (user.role) {
     case Role.STUDENT:
-    case Role.PROXY_STUDENT:
       return <StudentDashboard />;
     case Role.CLASS_ADVISOR:
       return <ClassAdvisorDashboard />;
@@ -61,6 +71,11 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/complete-profile" element={
+            <ProtectedRoute>
+              <CompleteProfilePage />
+            </ProtectedRoute>
+          } />
           <Route
             path="/dashboard"
             element={

@@ -1,6 +1,5 @@
 export enum Role {
   STUDENT = 'STUDENT',
-  PROXY_STUDENT = 'PROXY_STUDENT',
   CLASS_ADVISOR = 'CLASS_ADVISOR',
   HEALTH_RECEPTIONIST = 'HEALTH_RECEPTIONIST',
   DOCTOR = 'DOCTOR',
@@ -104,7 +103,7 @@ export interface ExitAuthorization {
   id: string;
   requestId: string;
   issuedById?: string;
-  tokenHash: string;
+  exitToken: string;
   expiresAt: string;
   issuedAt: string;
   usedAt?: string;

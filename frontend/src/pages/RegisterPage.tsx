@@ -44,7 +44,7 @@ const RegisterPage: React.FC = () => {
             let classSection = '';
             let department = '';
 
-            if (formData.role === Role.STUDENT || formData.role === Role.PROXY_STUDENT || formData.role === Role.CLASS_ADVISOR) {
+            if (formData.role === Role.STUDENT || formData.role === Role.CLASS_ADVISOR) {
                 if (!formData.year || !formData.section || !formData.department) {
                     setError('Please select year, section, and department');
                     setLoading(false);
@@ -79,7 +79,6 @@ const RegisterPage: React.FC = () => {
     };
 
     const needsClassSection = formData.role === Role.STUDENT ||
-        formData.role === Role.PROXY_STUDENT ||
         formData.role === Role.CLASS_ADVISOR;
     const needsDepartment = formData.role === Role.HOD;
 
@@ -164,7 +163,7 @@ const RegisterPage: React.FC = () => {
                             required
                         >
                             <option value={Role.STUDENT}>Student</option>
-                            <option value={Role.PROXY_STUDENT}>Proxy Student</option>
+
                             <option value={Role.CLASS_ADVISOR}>Class Advisor</option>
                             <option value={Role.HEALTH_RECEPTIONIST}>Health Receptionist</option>
                             <option value={Role.DOCTOR}>Doctor</option>

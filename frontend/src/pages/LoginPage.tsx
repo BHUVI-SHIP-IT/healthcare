@@ -1,26 +1,18 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage: React.FC = () => {
-    const navigate = useNavigate();
-    const { login } = useAuth();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { loginWithOAuth } = useAuth();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
-        setLoading(true);
-
+    const handleGoogleLogin = async () => {
         try {
-            await login(email, password);
-            navigate('/dashboard');
+            setError('');
+            setLoading(true);
+            await loginWithOAuth('google');
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Login failed. Please try again.');
-        } finally {
+            setError(err.message || 'Failed to login with Google');
             setLoading(false);
         }
     };
@@ -28,7 +20,7 @@ const LoginPage: React.FC = () => {
     return (
         <div className="flex items-center justify-center" style={{ minHeight: '100vh', padding: '2rem' }}>
             <div className="glass-card animate-fadeIn" style={{ maxWidth: '450px', width: '100%', padding: '2.5rem' }}>
-                <div className="text-center mb-4">
+                <div className="text-center mb-8">
                     <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🏥 Campus Care</h1>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
                         Welcome back! Please login to your account.
@@ -36,64 +28,37 @@ const LoginPage: React.FC = () => {
                 </div>
 
                 {error && (
-                    <div className="alert alert-danger">
+                    <div className="alert alert-danger mb-4">
                         <span>⚠️</span>
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit}>
-                    <div className="input-group">
-                        <label htmlFor="email" className="input-label">
-                            Email Address
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            className="input-field"
-                            placeholder="you@example.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            autoFocus
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label htmlFor="password" className="input-label">
-                            Password
-                        </label>
-                        <input
-                            id="password"
-                            type="password"
-                            className="input-field"
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <button type="submit" className="btn btn-primary w-full" disabled={loading}>
-                        {loading ? (
-                            <>
-                                <span className="spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }}></span>
-                                Logging in...
-                            </>
-                        ) : (
-                            'Login'
-                        )}
-                    </button>
-                </form>
-
-                <div className="text-center mt-3">
-                    <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                        Don't have an account?{' '}
-                        <Link to="/register" style={{ color: 'var(--primary-400)', fontWeight: 600, textDecoration: 'none' }}>
-                            Register here
-                        </Link>
-                    </p>
-                </div>
+                <button
+                    type="button"
+                    onClick={handleGoogleLogin}
+                    className="btn w-full flex items-center justify-center gap-2"
+                    style={{
+                        backgroundColor: 'white',
+                        color: '#333',
+                        border: '1px solid #ddd',
+                        padding: '12px',
+                        fontSize: '1rem'
+                    }}
+                    disabled={loading}
+                >
+                    {loading ? (
+                        <>
+                            <span className="spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }}></span>
+                            Connecting...
+                        </>
+                    ) : (
+                        <>
+                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '20px', height: '20px' }} />
+                            Continue with Google
+                        </>
+                    )}
+                </button>
             </div>
         </div>
     );
