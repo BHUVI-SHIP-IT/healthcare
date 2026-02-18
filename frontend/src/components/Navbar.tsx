@@ -73,7 +73,10 @@ const Navbar: React.FC = () => {
     return (
         <nav className="navbar">
             <div className="navbar-content">
-                <div className="navbar-brand">Campus Care</div>
+                <div className="navbar-brand" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <img src="/cit_logo.png" alt="CIT Logo" style={{ height: '40px', objectFit: 'contain' }} />
+                    Campus Care
+                </div>
                 {user && (
                     <div className="navbar-menu">
                         <div className="navbar-user">

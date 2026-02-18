@@ -18,7 +18,10 @@ const LoginPage: React.FC = () => {
     };
 
     return (
-        <div className="flex items-center justify-center" style={{ minHeight: '100vh', padding: '2rem' }}>
+        <div className="flex items-center justify-center" style={{ minHeight: '100vh', padding: '2rem', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: '2rem', left: '2rem' }}>
+                <img src="/cit_logo.png" alt="CIT Logo" style={{ height: '60px', objectFit: 'contain' }} />
+            </div>
             <div className="glass-card animate-fadeIn" style={{ maxWidth: '450px', width: '100%', padding: '2.5rem' }}>
                 <div className="text-center mb-8">
                     <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🏥 Campus Care</h1>
