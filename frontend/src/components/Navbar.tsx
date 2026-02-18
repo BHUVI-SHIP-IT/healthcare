@@ -73,8 +73,18 @@ const Navbar: React.FC = () => {
     return (
         <nav className="navbar">
             <div className="navbar-content">
-                <div className="navbar-brand" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <img src="/cit_logo.png" alt="CIT Logo" style={{ height: '40px', objectFit: 'contain' }} />
+                <div className="navbar-brand" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <img
+                        src="/cit_logo.png"
+                        alt="CIT Logo"
+                        style={{
+                            height: '50px',
+                            objectFit: 'contain',
+                            background: 'rgba(255, 255, 255, 0.95)',
+                            padding: '4px',
+                            borderRadius: '8px'
+                        }}
+                    />
                     Campus Care
                 </div>
                 {user && (

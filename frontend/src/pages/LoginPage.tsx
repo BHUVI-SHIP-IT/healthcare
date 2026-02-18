@@ -20,7 +20,18 @@ const LoginPage: React.FC = () => {
     return (
         <div className="flex items-center justify-center" style={{ minHeight: '100vh', padding: '2rem', position: 'relative' }}>
             <div style={{ position: 'absolute', top: '2rem', left: '2rem' }}>
-                <img src="/cit_logo.png" alt="CIT Logo" style={{ height: '60px', objectFit: 'contain' }} />
+                <img
+                    src="/cit_logo.png"
+                    alt="CIT Logo"
+                    style={{
+                        height: '80px',
+                        objectFit: 'contain',
+                        background: 'rgba(255, 255, 255, 0.95)',
+                        padding: '8px',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                />
             </div>
             <div className="glass-card animate-fadeIn" style={{ maxWidth: '450px', width: '100%', padding: '2.5rem' }}>
                 <div className="text-center mb-8">
