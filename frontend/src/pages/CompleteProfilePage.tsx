@@ -20,7 +20,7 @@ const CompleteProfilePage: React.FC = () => {
     useEffect(() => {
         if (user?.email) {
             // Enforce Domain Restriction
-            const allowedEmails = ['bhuvaneswar981@gmail.com', 'lolm06855@gmail.com'];
+            const allowedEmails = ['bhuvaneswar981@gmail.com', 'lolm06855@gmail.com', 'bhuvifacts4people@gmail.com', 'bhuviprime009@gmail.com'];
             if (!user.email.endsWith('@citchennai.net') && !allowedEmails.includes(user.email)) {
                 setError('Only @citchennai.net email addresses are allowed.');
                 return;
@@ -77,6 +77,10 @@ const CompleteProfilePage: React.FC = () => {
                 // Staff (email is likely name@citchennai.net)
                 if (user.email === 'lolm06855@gmail.com') {
                     setRole(Role.HEALTH_RECEPTIONIST);
+                } else if (user.email === 'bhuvifacts4people@gmail.com') {
+                    setRole(Role.DOCTOR);
+                } else if (user.email === 'bhuviprime009@gmail.com') {
+                    setRole(Role.HOD);
                 } else {
                     setRole(Role.CLASS_ADVISOR);
                 }
