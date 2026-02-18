@@ -84,6 +84,21 @@ const DoctorDashboard: React.FC = () => {
                         <div className="modal" onClick={(e) => e.stopPropagation()}>
                             <div className="card">
                                 <h3>Submit Medical Report</h3>
+                                {selectedRequest.student && (
+                                    <div style={{ marginBottom: '1rem', padding: '0.75rem', backgroundColor: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)' }}>
+                                        <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1rem' }}>Student Details</h4>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.9rem' }}>
+                                            <p style={{ margin: 0 }}><strong>Name:</strong> {selectedRequest.student.fullName}</p>
+                                            <p style={{ margin: 0 }}><strong>Email:</strong> {selectedRequest.student.email}</p>
+                                            {selectedRequest.student.classSection && (
+                                                <p style={{ margin: 0 }}><strong>Class:</strong> {selectedRequest.student.classSection}</p>
+                                            )}
+                                            {selectedRequest.student.department && (
+                                                <p style={{ margin: 0 }}><strong>Dept:</strong> {selectedRequest.student.department}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                                 <p><strong>Patient Request:</strong> {selectedRequest.id.slice(-8)}</p>
                                 <p><strong>Symptoms:</strong> {selectedRequest.symptoms}</p>
                                 {selectedRequest.description && <p><strong>Description:</strong> {selectedRequest.description}</p>}

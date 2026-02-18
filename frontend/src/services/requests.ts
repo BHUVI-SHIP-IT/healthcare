@@ -52,7 +52,7 @@ export async function getPendingRequests(): Promise<HealthRequest[]> {
     if (!user) throw new Error('Not authenticated');
 
     const userRole = user.user_metadata.role;
-    let query = supabase.from('HealthRequest').select('*, student:User!studentId(id, fullName, email, classSection)');
+    let query = supabase.from('HealthRequest').select('*, student:User!studentId(id, fullName, email, classSection, department, role)');
 
     // Filter based on role
     if (userRole === 'CLASS_ADVISOR') {
