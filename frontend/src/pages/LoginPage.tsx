@@ -24,12 +24,9 @@ const LoginPage: React.FC = () => {
                     src="/cit_logo.png"
                     alt="CIT Logo"
                     style={{
-                        height: '80px',
+                        height: '120px',
                         objectFit: 'contain',
-                        background: 'rgba(255, 255, 255, 0.95)',
-                        padding: '8px',
                         borderRadius: '12px',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
                 />
             </div>

@@ -78,11 +78,9 @@ const Navbar: React.FC = () => {
                         src="/cit_logo.png"
                         alt="CIT Logo"
                         style={{
-                            height: '50px',
+                            height: '55px',
                             objectFit: 'contain',
-                            background: 'rgba(255, 255, 255, 0.95)',
-                            padding: '4px',
-                            borderRadius: '8px'
+                            borderRadius: '4px'
                         }}
                     />
                     Campus Care
