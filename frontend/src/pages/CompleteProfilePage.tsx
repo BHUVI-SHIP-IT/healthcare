@@ -113,7 +113,6 @@ const CompleteProfilePage: React.FC = () => {
                 updates.classSection = `${department} - ${year} - ${section}`; // Format: CSE - 2024 - A
                 updates.department = department; // Save parsed department
             } else {
-            } else {
                 // Staff
                 if (role === Role.CLASS_ADVISOR) {
                     if (!department || !year || !section) throw new Error("Please fill in all fields (Dept, Year, Section).");
